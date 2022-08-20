@@ -1,0 +1,24 @@
+#importação de bibliotecas necessarias
+import requests
+from bs4 import BeautifulSoup
+
+#requisição do conteudo do site atraves do Requests
+base_do_site = 'https://lista.mercadolivre.com.br//'
+pesquisa = input('qual produto voce procura?')
+resposta = requests.get(base_do_site + pesquisa)
+
+#transformação do conteudo do site em BeautifulSoup
+site = BeautifulSoup(resposta.text, 'html.parser')
+produtos = site.findAll('div', attrs={'class':'andes-card andes-card--flat andes-card--default ui-search-result ui-search-result--core andes-card--padding-default andes-card--animated'})
+
+for produto in produtos:
+    nome = produto.find('h2', attrs={'class':'ui-search-item__title ui-search-item__group__element'})
+    link = produto.find('a', attrs={'class':'ui-search-link'})
+    preco = produto.find('span', attrs={'class':'price-tag-symbol'})
+    preco2 = produto.find('span', attrs={'class':'price-tag-text-sr-only'})
+
+#resultado
+    print('nome do produto:', nome.text)
+    print('link:',link['href'])
+    print('preco:', preco.text, preco2.text)
+    print('\n')
