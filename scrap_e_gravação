@@ -1,0 +1,33 @@
+#bibliotecas necessarias
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+from openpyxl.workbook import Workbook
+
+#requisições da internet através do requests
+requests.get('https://g1.globo.com/')
+resposta = requests.get('https://g1.globo.com/')
+conteudo = resposta.content
+
+#tranformação da requisição do conteudo para BeautifulSoup
+site = BeautifulSoup(conteudo, 'html.parser')
+noticias = site.findAll('div', attrs={'class': 'feed-post-body'})
+
+for noticia in noticias:
+    titulo = noticia.find('a', attrs={'class': 'feed-post-link gui-color-primary gui-color-hover'})
+    linhas_finas = noticia.find('a', attrs={
+        'class': 'gui-color-primary gui-color-hover feed-post-body-title bstn-relatedtext'})
+
+    if linhas_finas:
+        lista_noticias.append([titulo.text, linhas_finas.text, titulo['href']])
+    else:
+        lista_noticias.append([titulo.text, '', titulo['href']])
+
+#criação de uma tabela atraves do pandas, para comportar os dados coletados        
+lista_noticias = []
+tabela_noticias = pd.DataFrame(lista_noticias, columns=['titulo', 'linhas_finas', 'link'])
+
+#processo de armazenamento da tabela em formatos diferentes
+tabela_noticias.to_csv('noticias.csv', index=False)
+tabela_noticias.to_json('noticias.json')
+tabela_noticias.to_excel('noticias.xlsx', index=False)
