@@ -13,6 +13,7 @@ conteudo = resposta.content
 site = BeautifulSoup(conteudo, 'html.parser')
 noticias = site.findAll('div', attrs={'class': 'feed-post-body'})
 
+#coletando dados
 for noticia in noticias:
     titulo = noticia.find('a', attrs={'class': 'feed-post-link gui-color-primary gui-color-hover'})
     linhas_finas = noticia.find('a', attrs={
